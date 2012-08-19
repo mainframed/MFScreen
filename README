@@ -1,0 +1,36 @@
+      8""8""8 8""""   8""""8                             
+      8  8  8 8       8      eeee eeeee  eeee eeee eeeee 
+      8e 8  8 8eeee   8eeeee 8  8 8   8  8    8    8   8 
+      88 8  8 88          88 8e   8eee8e 8eee 8eee 8e  8 
+      88 8  8 88      e   88 88   88   8 88   88   88  8 
+      88 8  8 88      8eee88 88e8 88   8 88ee 88ee 88  8 						                                           
+
+						By: Soldier of Fortran
+						   (@mainframed767)
+
+##################################################################
+# Script to connect to a 3270 server and take a screenshot	 #
+#                                                                #
+# Requirements: Python, s3270 and optionally x3270               #
+# Created by: Soldier of Fortran (@mainframed767)                #
+# Usage: Given a hostname[:port] or file of hosts[:ports] 	 #
+# connects and takes a screenshot of the first screen            #
+#                                                                #
+# Copyright GPL 2012                                             #
+##################################################################
+
+age: MFScreen.py [-h] [-m TARGET] [-f HOSTS] [-s SLEEP]
+
+MF Screen - A script to capture the first screen of a mainframe
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -m TARGET, --mainframe TARGET
+                        target IP address or Hostname and port: TARGET[:PORT]
+                        default port is 23
+  -f HOSTS, --file HOSTS
+                        a file containing a listing of hosts[:ports] to
+                        connect to.
+  -s SLEEP, --sleep SLEEP
+                        Seconds to sleep between actions (increase on slower
+                        systems). The default is 1 second.

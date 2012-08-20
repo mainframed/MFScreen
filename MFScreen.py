@@ -16,6 +16,9 @@ import time #needed for sleep
 import sys 
 import argparse #needed for argument parsing
 import platform #needed for OS check
+from colorama import init
+init()
+
 
 from blessings import Terminal
 t = Terminal()

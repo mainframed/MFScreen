@@ -34,3 +34,8 @@ optional arguments:
   -s SLEEP, --sleep SLEEP
                         Seconds to sleep between actions (increase on slower
                         systems). The default is 1 second.
+
+
+Windows:
+
+	Windows support is currently being worked on

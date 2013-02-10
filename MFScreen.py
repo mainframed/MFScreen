@@ -117,6 +117,7 @@ if not results.hosts: #enter single server mode
 		print t.white(results.target + '.html')
 		Grab_Screen(results.target)	
 		em.terminate()
+		print t.green_bold('      +     Disonnected')
 	except Exception:
 		print t.red + t.bold + '      [!] Connection to:', results.target, 'FAILED!' + t.normal
 	except IOError:
@@ -135,6 +136,7 @@ else:
 			print t.white(hostnames.strip() + '.html')
 			Grab_Screen(hostnames.strip())
 			em.terminate() # And we're done. Close the connection
+			print t.green_bold('      +     Disonnected')
 		except IOError:
 			print t.red + t.bold + '      [!] Connection to TOR proxy:', results.tor, 'FAILED!' + t.normal
 		except Exception, err:

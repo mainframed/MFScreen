@@ -17,7 +17,6 @@ import sys
 import argparse #needed for argument parsing
 import platform #needed for OS check
 
-
 from blessings import Terminal
 t = Terminal()
 
@@ -27,9 +26,13 @@ def Grab_Screen(hostname):
 
 def Connect_to_ZOS(hostname):
 	#connects to the target machine and sleeps for 'sleep' seconds
-	em.connect(hostname)
-	#em.connect(results.target)
-	time.sleep(results.sleep)
+	trying = False
+	try:
+		em.connect(hostname)
+		trying = True
+	except:
+		trying = False	
+	return trying
 
 print t.bold + '''
 
@@ -51,27 +54,28 @@ parser = argparse.ArgumentParser(description='MF Screen - A script to capture th
 parser.add_argument('-m','--mainframe', help='target IP address or Hostname and port: TARGET[:PORT] default port is 23',dest='target')
 parser.add_argument('-f','--file', help='a file containing a listing of hosts[:ports] to connect to.',dest='hosts')
 parser.add_argument('-s','--sleep',help='Seconds to sleep between actions (increase on slower systems). The default is 1 second.',default=1,type=int,dest='sleep')
-#parser.add_argument('-t','--tor',help='Use TOR proxy to connect. Syntax is TYPE:HOSTNAME:PORT for any TOR proxy. Most likely socks5d:localhost:9050',dest='tor')
+parser.add_argument('-t','--tor',help='Use TOR proxy to connect. Syntax is TYPE:HOSTNAME:PORT for any TOR proxy. Most likely socks5d:localhost:9050',dest='tor')
 args = parser.parse_args()
 results = parser.parse_args() # put the arg results in the variable results
 
-
-#if results.tor is not None: # Create the argument to pass s3270
-#	tor_proxy = '-proxy ' + results.tor
-
-
 if platform.system() == 'Darwin': #'Darwin'
 	class Emulator(EmulatorBase):
+		x3270_executable = 'MAC_Binaries/x3270'
 		s3270_executable = 'MAC_Binaries/s3270'
-		#if results.tor is not None: s3270_args = ['tor_proxy']
+		if results.tor is not None: 
+			s3270_args = ['-proxy', results.tor]
+			x3270_args = ['-proxy', results.tor]
 elif platform.system() == 'Linux':
 	class Emulator(EmulatorBase):
-		s3270_executable = '/usr/bin/s3270' #this assumes s3270 is in your $PATH. If not then you'll have to change it
-		#if results.tor is not None: s3270_args = ['tor_proxy']
+		x3270_executable = '/usr/bin/x3270'
+		s3270_executable = '/usr/bin/s3270' 
+		if results.tor is not None: 
+			s3270_args = ['-proxy', results.tor]
+			x3270_args = ['-proxy', results.tor]
 elif platform.system() == 'Windows':
 	class Emulator(EmulatorBase):
 		s3270_executable = 'Windows_Binaries/ws3270.exe'
-		#if results.tor is not None: s3270_args = ['tor_proxy']
+		if results.tor is not None: s3270_args = ['-proxy', results.tor]
 else:
 	print t.red + t.bold + '      [!] Your Platform:', platform.system(), 'is not supported at this time. Windows support should be available soon' + t.normal
 	sys.exit()
@@ -97,47 +101,51 @@ else:
 	print  t.green_bold + '      [   ] Sleep set to:',
 	print t.white(str(results.sleep)) + t.normal
 
-#if results.tor is not None:
-#	print t.green_bold + '      [' + t.white + ' X ' + t.green +'] Tor Proxy:',
-#	print t.white(results.tor) + t.normal
-#else:
-#	print t.green_bold + '      [   ] Tor Proxy:' + t.normal
+if results.tor is not None:
+	print t.green_bold + '      [' + t.white + ' X ' + t.green +'] Tor Proxy:',
+	print t.white(results.tor) + t.normal
+else:
+	print t.green_bold + '      [   ] Tor Proxy:' + t.normal
 
 
 print ''
 
 if not results.hosts: #enter single server mode	
-	em = Emulator()
+	em = Emulator(visible=True)
 	print t.blue_bold + '      +     Connecting to:',
 	print t.white(results.target)	
-	try:
-		Connect_to_ZOS(results.target)
-		print t.green_bold('      +     Connected')
-		print t.blue_bold + '      +     Grabbing screen to', 
-		print t.white(results.target + '.html')
-		Grab_Screen(results.target)	
-		em.terminate()
-		print t.green_bold('      +     Disonnected')
-	except Exception:
-		print t.red + t.bold + '      [!] Connection to:', results.target, 'FAILED!' + t.normal
-	except IOError:
-		print t.red + t.bold + '      [!] Connection to TOR proxy:', results.tor, 'FAILED!' + t.normal
-	
+	Connect_to_ZOS(results.target)
+	print t.green_bold('      +     Connected')
+	print t.blue_bold + '      +     Sleeping for',
+	print t.white(str(results.sleep)) + t.normal
+	snooze = results.sleep -1
+	while snooze >0:
+		time.sleep(1)
+		print '                        ',
+		print t.white_bold(str(snooze)) + t.normal
+		snooze -=1
+	print t.blue_bold + '      +     Grabbing screen to', 
+	print t.white(results.target + '.html')
+	Grab_Screen(results.target)	
+	em.terminate()
 else:
 	hostsfile=open(results.hosts) #open the usernames file
 	for hostnames in hostsfile:
-		em = Emulator()
+		em = Emulator(visible=True)
 		print t.blue_bold + '      +     Connecting to:',
 		print t.white(hostnames.strip())	
-		try:
-			Connect_to_ZOS(hostnames.strip())
-			print t.green_bold('      +     Connected')
-			print t.blue_bold + '      +     Grabbing screen to', 
-			print t.white(hostnames.strip() + '.html')
-			Grab_Screen(hostnames.strip())
-			em.terminate() # And we're done. Close the connection
-			print t.green_bold('      +     Disonnected')
-		except IOError:
-			print t.red + t.bold + '      [!] Connection to TOR proxy:', results.tor, 'FAILED!' + t.normal
-		except Exception, err:
-			print t.red + t.bold + '      [!] Connection to:', hostnames.strip(), 'FAILED!' + t.normal
+		Connect_to_ZOS(hostnames.strip())
+		print t.green_bold('      +     Connected')
+		print t.blue_bold + '      +     Sleeping for',
+	        print t.white(str(results.sleep)) + t.normal
+	        snooze = results.sleep -1
+	        while snooze >0:
+        	        time.sleep(1)
+                	print '                        ',
+		        print t.white_bold(str(snooze)) + t.normal
+                	snooze -=1
+		print t.blue_bold + '      +     Grabbing screen to', 
+		print t.white(hostnames.strip() + '.html')
+		Grab_Screen(hostnames.strip())
+		em.terminate()
+# And we're done. Close the connection

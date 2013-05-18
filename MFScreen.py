@@ -63,15 +63,15 @@ if platform.system() == 'Darwin': #'Darwin'
 		x3270_executable = 'MAC_Binaries/x3270'
 		s3270_executable = 'MAC_Binaries/s3270'
 		if results.tor is not None: 
-			s3270_args = ['-proxy', results.tor]
-			x3270_args = ['-proxy', results.tor]
+			s3270_args = ['-proxy', results.tor,]
+			x3270_args = ['-proxy', results.tor,'-script']
 elif platform.system() == 'Linux':
 	class Emulator(EmulatorBase):
 		x3270_executable = '/usr/bin/x3270'
 		s3270_executable = '/usr/bin/s3270' 
 		if results.tor is not None: 
-			s3270_args = ['-proxy', results.tor]
-			x3270_args = ['-proxy', results.tor]
+			s3270_args = ['-proxy', results.tor,]
+			x3270_args = ['-proxy', results.tor,'-script']
 elif platform.system() == 'Windows':
 	class Emulator(EmulatorBase):
 		s3270_executable = 'Windows_Binaries/ws3270.exe'

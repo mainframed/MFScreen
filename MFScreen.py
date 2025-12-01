@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 ##################################################################
 # Script to connect to a 3270 server and take a screenshot	 #
@@ -34,19 +34,19 @@ def Connect_to_ZOS(hostname):
 		trying = False	
 	return trying
 
-print t.bold + '''
+print(t.bold + '''
 
-      8""8""8 8""""   8""""8                             
-      8  8  8 8       8      eeee eeeee  eeee eeee eeeee 
-      8e 8  8 8eeee   8eeeee 8  8 8   8  8    8    8   8 
-      88 8  8 88          88 8e   8eee8e 8eee 8eee 8e  8 
-      88 8  8 88      e   88 88   88   8 88   88   88  8 
-      88 8  8 88      8eee88 88e8 88   8 88ee 88ee 88  8 						                                           
+      8""8""8 8""""   8""""8
+      8  8  8 8       8      eeee eeeee  eeee eeee eeeee
+      8e 8  8 8eeee   8eeeee 8  8 8   8  8    8    8   8
+      88 8  8 88          88 8e   8eee8e 8eee 8eee 8e  8
+      88 8  8 88      e   88 88   88   8 88   88   88  8
+      88 8  8 88      8eee88 88e8 88   8 88ee 88ee 88  8
 
 						By: Soldier of Fortran
 						   (@mainframed767)
 
-''' + t.normal
+''' + t.normal)
 
 
 #start argument parser
@@ -77,75 +77,75 @@ elif platform.system() == 'Windows':
 		s3270_executable = 'Windows_Binaries/ws3270.exe'
 		if results.tor is not None: s3270_args = ['-proxy', results.tor]
 else:
-	print t.red + t.bold + '      [!] Your Platform:', platform.system(), 'is not supported at this time. Windows support should be available soon' + t.normal
+	print(t.red + t.bold + '      [!] Your Platform:', platform.system(), 'is not supported at this time. Windows support should be available soon' + t.normal)
 	sys.exit()
 
 
 if not results.target and not results.hosts:
-	print t.red + t.bold + '      [!] You gotta specify a host or a file. Try -h for help.' + t.normal
+	print(t.red + t.bold + '      [!] You gotta specify a host or a file. Try -h for help.' + t.normal)
 	sys.exit()
 
 if not results.hosts:
-	print t.green_bold + '      [' + t.white + ' X ' + t.green +'] Target:',
-	print t.white(results.target) + t.normal
-	print t.green_bold + '      [   ] Multiple targets file:' + t.normal
+	print(t.green_bold + '      [' + t.white + ' X ' + t.green +'] Target:', end=' ')
+	print(t.white(results.target) + t.normal)
+	print(t.green_bold + '      [   ] Multiple targets file:' + t.normal)
 if not results.target:
-	print t.green_bold + '      [   ] Target:'
-	print t.green_bold + '      [' + t.white_bold + ' X ' + t.green +'] Multiple targets file:', 
-	print t.white(results.hosts) + t.normal
-	
+	print(t.green_bold + '      [   ] Target:')
+	print(t.green_bold + '      [' + t.white_bold + ' X ' + t.green +'] Multiple targets file:', end=' ')
+	print(t.white(results.hosts) + t.normal)
+
 if results.sleep > 1:
-	print t.green_bold + '      [' + t.white + ' X ' + t.green +'] Sleep set to:',
-	print t.white(str(results.sleep)) + t.normal
+	print(t.green_bold + '      [' + t.white + ' X ' + t.green +'] Sleep set to:', end=' ')
+	print(t.white(str(results.sleep)) + t.normal)
 else:
-	print  t.green_bold + '      [   ] Sleep set to:',
-	print t.white(str(results.sleep)) + t.normal
+	print(t.green_bold + '      [   ] Sleep set to:', end=' ')
+	print(t.white(str(results.sleep)) + t.normal)
 
 if results.tor is not None:
-	print t.green_bold + '      [' + t.white + ' X ' + t.green +'] Tor Proxy:',
-	print t.white(results.tor) + t.normal
+	print(t.green_bold + '      [' + t.white + ' X ' + t.green +'] Tor Proxy:', end=' ')
+	print(t.white(results.tor) + t.normal)
 else:
-	print t.green_bold + '      [   ] Tor Proxy:' + t.normal
+	print(t.green_bold + '      [   ] Tor Proxy:' + t.normal)
 
 
-print ''
+print('')
 
-if not results.hosts: #enter single server mode	
+if not results.hosts: #enter single server mode
 	em = Emulator(visible=True)
-	print t.blue_bold + '      +     Connecting to:',
-	print t.white(results.target)	
+	print(t.blue_bold + '      +     Connecting to:', end=' ')
+	print(t.white(results.target))
 	Connect_to_ZOS(results.target)
-	print t.green_bold('      +     Connected')
-	print t.blue_bold + '      +     Sleeping for',
-	print t.white(str(results.sleep)) + t.normal
+	print(t.green_bold('      +     Connected'))
+	print(t.blue_bold + '      +     Sleeping for', end=' ')
+	print(t.white(str(results.sleep)) + t.normal)
 	snooze = results.sleep -1
 	while snooze >0:
 		time.sleep(1)
-		print '                        ',
-		print t.white_bold(str(snooze)) + t.normal
+		print('                        ', end=' ')
+		print(t.white_bold(str(snooze)) + t.normal)
 		snooze -=1
-	print t.blue_bold + '      +     Grabbing screen to', 
-	print t.white(results.target + '.html')
-	Grab_Screen(results.target)	
+	print(t.blue_bold + '      +     Grabbing screen to', end=' ')
+	print(t.white(results.target + '.html'))
+	Grab_Screen(results.target)
 	em.terminate()
 else:
-	hostsfile=open(results.hosts) #open the usernames file
-	for hostnames in hostsfile:
-		em = Emulator(visible=True)
-		print t.blue_bold + '      +     Connecting to:',
-		print t.white(hostnames.strip())	
-		Connect_to_ZOS(hostnames.strip())
-		print t.green_bold('      +     Connected')
-		print t.blue_bold + '      +     Sleeping for',
-	        print t.white(str(results.sleep)) + t.normal
-	        snooze = results.sleep -1
-	        while snooze >0:
-        	        time.sleep(1)
-                	print '                        ',
-		        print t.white_bold(str(snooze)) + t.normal
-                	snooze -=1
-		print t.blue_bold + '      +     Grabbing screen to', 
-		print t.white(hostnames.strip() + '.html')
-		Grab_Screen(hostnames.strip())
-		em.terminate()
+	with open(results.hosts) as hostsfile: #open the usernames file
+		for hostnames in hostsfile:
+			em = Emulator(visible=True)
+			print(t.blue_bold + '      +     Connecting to:', end=' ')
+			print(t.white(hostnames.strip()))
+			Connect_to_ZOS(hostnames.strip())
+			print(t.green_bold('      +     Connected'))
+			print(t.blue_bold + '      +     Sleeping for', end=' ')
+			print(t.white(str(results.sleep)) + t.normal)
+			snooze = results.sleep -1
+			while snooze >0:
+				time.sleep(1)
+				print('                        ', end=' ')
+				print(t.white_bold(str(snooze)) + t.normal)
+				snooze -=1
+			print(t.blue_bold + '      +     Grabbing screen to', end=' ')
+			print(t.white(hostnames.strip() + '.html'))
+			Grab_Screen(hostnames.strip())
+			em.terminate()
 # And we're done. Close the connection
